@@ -46,7 +46,7 @@
         const socket = new WebSocket('ws://localhost:8080');
 
         const appendLog = (label, message) => {
-            const entry = new Date().toLocaleTimeString() + " - " + label + "\n";
+            const entry = new Date().toLocaleTimeString() + " - " + label + " " + message + "\n";
             log.textContent = entry + log.textContent;
         }
 
@@ -60,6 +60,23 @@
             statusEl.textContent = "Disconnected";
             statusEl.classList.remove("status-off");
             appendLog('[SYSTEM]', 'Tunnel collapsed.');
+        });
+
+        socket.addEventListener("message", (event) => {
+            appendLog('[RECEIEVED]', event.data);
+        });
+    
+        document.getElementById("message-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            
+            if(socket.readyState !== WebSocket.OPEN){
+                appendLog('[ERROR]', 'No active tunnel found.');
+            }
+
+            const message = input.value.trim();
+            socket.send(message);
+            appendLog('[SENT]', message);
+            input.value = '';
         });
     </script>
 </html>
