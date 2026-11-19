@@ -50,18 +50,22 @@
             log.textContent = entry + log.textContent;
         }
 
+        // websocket open event listener
         socket.addEventListener("open", () => {
             statusEl.textContent = "Connected: ws://localhost:8080";
             statusEl.classList.add("status-on");
             appendLog('[SYSTEM]', 'Tunnel Established.');
         });
 
+
+        // websocket close event listener
         socket.addEventListener("close", () => {
             statusEl.textContent = "Disconnected";
             statusEl.classList.remove("status-off");
             appendLog('[SYSTEM]', 'Tunnel collapsed.');
         });
 
+        // websocket message event listener
         socket.addEventListener("message", (event) => {
             appendLog('[RECEIEVED]', event.data);
         });
@@ -69,6 +73,7 @@
         document.getElementById("message-form").addEventListener("submit", (e) => {
             e.preventDefault();
             
+            // websocket connection check
             if(socket.readyState !== WebSocket.OPEN){
                 appendLog('[ERROR]', 'No active tunnel found.');
             }
